@@ -8,7 +8,7 @@ app.get('/', (req, res) => {
   res.json({
     servico: 'DevOps Portfolio API',
     aluno: 'Eloísa Brandão',
-    ra: 'SEU RA',
+    ra: '2325096',
     aula: '01 - Fundamentos de Git e Docker',
     status: 'online',
     timestamp: new Date().toISOString()
