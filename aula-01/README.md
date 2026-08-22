@@ -1,44 +1,22 @@
-# Portfólio DevOps — UniFAAT 2026-2
-
-**Aluno:** Eloísa Brandão  
-**RA:** 2325096 
-**Disciplina:** DevOps — Centro Universitário UniFAAT  
-**Professor:** Alexandre Tavares  
-**Semestre:** 2026-2
-
-## Sobre
-
-Repositório de atividades e projetos da disciplina de DevOps.
-Aqui documento minha evolução desde os fundamentos de Git e Docker até pipelines completas de CI/CD.
-
-## Estrutura
-
-- `aula-01/` — Fundamentos de Git e Docker
-
-## Aprendizados
-
-A cada aula, registro neste repositório os principais conceitos e práticas aprendidos durante a disciplina.
-
-
 # Aula 01 — Fundamentos de Git e Docker
 
 ## O que aprendi
 
 ### Git
 
-- Aprendi que o Git é um sistema de controle de versão distribuído que permite acompanhar as alterações do projeto e manter um histórico do código.
-- Entendi a diferença entre Working Directory, Staging Area e Repository.
-- Aprendi a utilizar branches para desenvolver funcionalidades separadamente sem alterar diretamente a branch principal.
-- Entendi a importância de commits pequenos e descritivos utilizando Conventional Commits.
-- Aprendi como o GitHub funciona como repositório remoto para armazenar e compartilhar o projeto.
+- Aprendi que o Git serve para guardar o histórico das alterações do projeto.
+- Aprendi a usar `git add` para preparar os arquivos e `git commit` para salvar as alterações.
+- Aprendi a criar branches para trabalhar em uma parte do projeto sem mexer diretamente na `main`.
+- Aprendi a enviar meu projeto para o GitHub usando `git push`.
+- Aprendi que o GitHub pode guardar uma cópia do meu projeto e facilitar o trabalho com Git.
 
 ### Docker
 
-- Aprendi que containers permitem executar aplicações em ambientes isolados e padronizados.
-- Entendi a diferença entre uma imagem Docker e um container.
-- Aprendi que o Dockerfile contém as instruções utilizadas para construir uma imagem.
-- Entendi a importância do `.dockerignore` para evitar o envio de arquivos desnecessários para a imagem.
-- Aprendi a construir imagens e executar containers utilizando os comandos básicos do Docker.
+- Aprendi que o Docker permite executar uma aplicação dentro de um container.
+- Entendi que uma imagem é usada para criar um container.
+- Aprendi que o `Dockerfile` contém as instruções para criar a imagem da aplicação.
+- Aprendi a usar o `.dockerignore` para não copiar arquivos desnecessários para o container.
+- Aprendi a criar e executar um container usando `docker build` e `docker run`.
 
 ## Comandos Git praticados
 
