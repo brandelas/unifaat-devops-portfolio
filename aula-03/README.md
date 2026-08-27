@@ -305,20 +305,25 @@ Infraestrutura definida como código
 
 O arquivo .gitignore impede o versionamento de arquivos de estado e outros arquivos temporários do Terraform.
 
-14. Terraform x Console AWS
+## 14. Terraform x Console AWS
 
 O Console AWS permite configurar recursos de maneira visual e pode ser útil para operações pontuais.
 
-Por outro lado, o Terraform permite representar a infraestrutura como código, possibilitando:
+No entanto, a criação manual de IAM pelo Console depende de várias configurações realizadas por cliques e pode dificultar a reprodução e o rastreamento das alterações.
 
-Versionamento
-Reutilização
-Padronização
-Revisão das alterações
-Reprodutibilidade
-Automação
+O Terraform permite representar a infraestrutura e as permissões como código, possibilitando:
 
-Neste projeto, o Terraform foi utilizado para demonstrar o conceito de Infrastructure as Code e tornar a estrutura IAM reproduzível e documentada.
+- Versionamento
+- Reutilização
+- Padronização
+- Revisão das alterações
+- Reprodutibilidade
+- Automação
+- Rastreabilidade
+
+Para uma equipe, o Terraform é mais seguro e auditável porque as configurações ficam registradas no código e podem ser revisadas antes da aplicação. Dessa forma, alterações de infraestrutura e permissões ficam documentadas no histórico do Git e podem ser reproduzidas de forma consistente.
+
+Neste projeto, o Terraform foi utilizado para tornar a estrutura IAM reproduzível, documentada e alinhada ao princípio do menor privilégio.
 
 15. Conclusão
 
