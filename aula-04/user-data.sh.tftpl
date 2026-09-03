@@ -1,0 +1,17 @@
+#!/bin/bash
+
+dnf update -y
+dnf install -y git curl
+
+curl -fsSL https://rpm.nodesource.com/setup_18.x | bash -
+dnf install -y nodejs
+
+mkdir -p /opt/technova-api
+cd /opt
+git clone "${technova_api_repo_url}" technova-api
+cd /opt/technova-api
+npm install
+
+export PORT=3000
+nohup npm start > /var/log/technova-api.log 2>&1 &
+
