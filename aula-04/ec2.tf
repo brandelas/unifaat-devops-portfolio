@@ -28,7 +28,7 @@ resource "aws_instance" "api" {
   instance_type          = var.instance_type
   subnet_id              = aws_subnet.public_1.id
   vpc_security_group_ids = [aws_security_group.api.id]
-  iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
+  iam_instance_profile = data.aws_iam_instance_profile.lab.name
   key_name               = aws_key_pair.technova.key_name
   user_data = templatefile("${path.module}/user-data.sh.tftpl", {
     technova_api_repo_url = var.technova_api_repo_url
