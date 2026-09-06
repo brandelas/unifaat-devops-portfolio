@@ -24,6 +24,8 @@ resource "aws_iam_policy" "ec2_s3_role" {
   name        = "${var.ra}-technova-ec2-s3-role"
   description = "Permite que a EC2 acesse os dados da aplicacao no S3"
 
+  tags = local.common_tags
+
   policy = jsonencode({
     Version = "2012-10-17"
 

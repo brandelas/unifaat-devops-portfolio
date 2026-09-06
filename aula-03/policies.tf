@@ -2,6 +2,8 @@ resource "aws_iam_policy" "s3_read" {
   name        = "${var.ra}-technova-s3-read"
   description = "Permite leitura de objetos S3 do projeto TechNova"
 
+  tags = local.common_tags
+
   policy = jsonencode({
     Version = "2012-10-17"
 
@@ -31,6 +33,8 @@ resource "aws_iam_policy" "s3_read" {
 resource "aws_iam_policy" "ec2_s3" {
   name        = "${var.ra}-technova-ec2-s3"
   description = "Permite operacoes controladas de EC2 e S3 para Platform Engineering"
+
+  tags = local.common_tags
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -88,6 +92,8 @@ resource "aws_iam_policy" "ec2_s3" {
 resource "aws_iam_policy" "deny_destructive" {
   name        = "${var.ra}-technova-deny-destructive"
   description = "Bloqueia operacoes destrutivas para protecao dos recursos TechNova"
+
+  tags = local.common_tags
 
   policy = jsonencode({
     Version = "2012-10-17"
