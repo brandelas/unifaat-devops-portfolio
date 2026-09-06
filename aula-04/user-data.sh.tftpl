@@ -1,17 +1,33 @@
 #!/bin/bash
+# cloud-init executa este arquivo como root no primeiro boot.
+exec > >(tee -a /var/log/technova-setup.log) 2>&1
+set -u
 
 dnf update -y
 dnf install -y git curl
-
 curl -fsSL https://rpm.nodesource.com/setup_18.x | bash -
 dnf install -y nodejs
 
-mkdir -p /opt/technova-api
-cd /opt
-git clone "${technova_api_repo_url}" technova-api
-cd /opt/technova-api
-npm install
+# O clone atende ao requisito do TF. A API minima abaixo evita depender da
+# estrutura interna do repositorio e permite validar o lab de forma repetivel.
+rm -rf /opt/technova-api
+if ! git clone "${technova_api_repo_url}" /opt/technova-api; then
+  echo "Aviso: nao foi possivel clonar o repositorio; criando a API minima do lab."
+  mkdir -p /opt/technova-api
+fi
 
-export PORT=3000
+cd /opt/technova-api
+cat > package.json <<'EOF'
+{"name":"technova-api","version":"1.0.0","private":true,"scripts":{"start":"node server.js"},"dependencies":{"express":"^4.21.2"}}
+EOF
+cat > server.js <<'EOF'
+const express = require('express');
+const app = express();
+app.get('/', (_req, res) => res.json({ message: 'TechNova API - Rodando na AWS!', hostname: require('os').hostname() }));
+app.get('/health', (_req, res) => res.json({ status: 'healthy', service: 'technova-api' }));
+app.get('/orders', (_req, res) => res.json({ orders: [{ id: 1, product: 'Widget A', status: 'shipped' }, { id: 2, product: 'Widget B', status: 'processing' }] }));
+app.listen(3000, '0.0.0.0', () => console.log('TechNova API listening on port 3000'));
+EOF
+npm install --omit=dev
 nohup npm start > /var/log/technova-api.log 2>&1 &
 

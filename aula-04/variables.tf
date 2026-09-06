@@ -65,3 +65,26 @@ variable "technova_api_repo_url" {
   type        = string
   nullable    = false
 }
+
+variable "use_academy_instance_profile" {
+  description = "Usa o LabInstanceProfile existente do AWS Academy. Mantenha true no Learner Lab."
+  type        = bool
+  default     = true
+}
+
+variable "academy_instance_profile_name" {
+  description = "Nome do Instance Profile pre-existente no AWS Academy"
+  type        = string
+  default     = "LabInstanceProfile"
+}
+
+variable "create_dedicated_iam_role" {
+  description = "Cria role e Instance Profile com AmazonS3ReadOnlyAccess; use apenas fora do AWS Academy."
+  type        = bool
+  default     = false
+
+  validation {
+    condition     = var.use_academy_instance_profile || var.create_dedicated_iam_role
+    error_message = "Use o profile do Academy ou habilite a criacao da role dedicada."
+  }
+}
