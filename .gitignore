@@ -14,3 +14,17 @@ Thumbs.db
 # Build
 dist/
 build/
+
+# Pastas e arquivos do Terraform que NÃO devem subir
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
+*.tfvars
+*.tfvars.json
+.terraform.tfstate.lock.info
+crash.log
+
+# Arquivos de chave e segredos
+*.pem
+*.key
