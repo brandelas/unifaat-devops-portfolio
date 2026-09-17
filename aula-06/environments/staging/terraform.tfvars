@@ -1,0 +1,38 @@
+project_name = "technova"
+environment  = "staging"
+
+vpc_cidr = "10.1.0.0/16"
+
+subnets = {
+  public-1 = {
+    cidr_block = "10.1.1.0/24"
+    type       = "public"
+    az         = "us-east-1a"
+  }
+
+  public-2 = {
+    cidr_block = "10.1.2.0/24"
+    type       = "public"
+    az         = "us-east-1b"
+  }
+
+  private-1 = {
+    cidr_block = "10.1.3.0/24"
+    type       = "private"
+    az         = "us-east-1a"
+  }
+
+  private-2 = {
+    cidr_block = "10.1.4.0/24"
+    type       = "private"
+    az         = "us-east-1b"
+  }
+}
+
+ami_id = "ami-0d8e124066f7ed4f7"
+instance_type = "t2.micro"
+
+db_name           = "technova_staging"
+db_username       = "technova_admin"
+db_password       = "TROCAR_SENHA_AQUI"
+db_instance_class = "db.t3.micro"
