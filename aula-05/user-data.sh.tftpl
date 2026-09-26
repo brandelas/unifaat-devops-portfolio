@@ -1,0 +1,10 @@
+#!/bin/bash
+
+exec > >(tee -a /var/log/technova-setup.log) 2>&1
+set -u
+
+dnf update -y
+dnf install -y postgresql15
+
+echo "TechNova Aula 05 - EC2 configurada."
+echo "PostgreSQL client instalado."
