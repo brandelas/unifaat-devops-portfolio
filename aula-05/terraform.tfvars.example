@@ -1,0 +1,8 @@
+region      = "us-east-1"
+project_name = "TechNova"
+environment  = "development"
+owner        = "2325096"
+
+db_name     = "technova"
+db_username = "technova_admin"
+db_password = "COLOQUE_SUA_SENHA_AQUI"
