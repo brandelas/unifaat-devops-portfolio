@@ -1,16 +1,25 @@
-# Dependências
+﻿# Dependencias
 node_modules/
 
-# Variáveis de ambiente
+# Variaveis de ambiente e segredos
 .env
+*.tfvars
+*.tfvars.json
+*.pem
+*.key
 
-# Logs
+# Terraform local state e cache
+**/.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.tfstate.lock.info
+crash.log
+crash.*.log
+
+# Logs, sistema operacional e builds
 *.log
-
-# Sistema operacional
 .DS_Store
 Thumbs.db
-
-# Build
 dist/
 build/
+coverage/
