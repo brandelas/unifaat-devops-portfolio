@@ -1,9 +1,10 @@
 ﻿# Evidências da Aula 08
 
-Adicione aqui as capturas reais solicitadas pelo enunciado, após rodar o workflow no GitHub:
+Capturas reais das execuções do workflow e da configuração do secret:
 
-- `screenshot-pipeline-passing.png`
-- `screenshot-pipeline-failing.png`
-- `screenshot-secrets-configured.png` (nome do secret visível; valor sempre oculto)
+- `screenshot-pipeline-passing.png` — pipeline verde, incluindo lint, matriz Jest e Docker build/smoke test.
+- `screenshot-pipeline-failing.png` — falha intencional nos testes, executada em branch temporária e depois revertida.
+- `screenshot-secrets-configured.png` — nome do secret visível; valor oculto.
+- `secret-verification-log.png` — passo da CI confirma que o secret está configurado sem exibir seu valor.
 
-Nenhuma captura foi criada artificialmente. Consulte a aba Actions do portfólio para registrar execuções reais.
+Nenhuma captura foi criada artificialmente. As execuções podem ser consultadas na aba Actions do portfólio.
