@@ -1,0 +1,63 @@
+name: AI Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  ai-review:
+    name: ai-review
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Coletar diff do PR
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          DIFF_FILE: ${{ runner.temp }}/pr-diff.txt
+        run: git diff --no-ext-diff --unified=0 "origin/${BASE_REF}...HEAD" -- > "$DIFF_FILE"
+      - name: Analisar diff
+        id: analysis
+        continue-on-error: true
+        env:
+          DIFF_FILE: ${{ runner.temp }}/pr-diff.txt
+          REVIEW_RESULT: ${{ runner.temp }}/ai-review-result.md
+        run: node .github/scripts/ai-review.js
+      - name: Comentar ou atualizar review
+        if: always() && steps.analysis.outcome != 'skipped'
+        uses: actions/github-script@v7
+        env:
+          REVIEW_RESULT: ${{ runner.temp }}/ai-review-result.md
+        with:
+          script: |
+            const fs = require('node:fs');
+            const body = fs.readFileSync(process.env.REVIEW_RESULT, 'utf8');
+            const marker = '<!-- technova-ai-review -->';
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner, repo, issue_number, per_page: 100
+            });
+            const existing = comments.find(comment =>
+              comment.user?.type === 'Bot' && comment.body?.includes(marker)
+            );
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
+      - name: Aplicar quality gate
+        if: always() && steps.analysis.outcome == 'failure'
+        run: |
+          echo 'O review encontrou achados CRITICAL ou falhou ao analisar o diff.'
+          exit 1

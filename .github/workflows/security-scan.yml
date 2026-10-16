@@ -1,0 +1,33 @@
+name: Security Scan
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'aula-09/**'
+      - '.github/scripts/**'
+
+permissions:
+  contents: read
+
+jobs:
+  security-scan:
+    name: security-scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Preparar diff do PR
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          DIFF_FILE: ${{ runner.temp }}/pr-diff.txt
+        run: git diff --no-ext-diff --unified=0 "origin/${BASE_REF}...HEAD" -- > "$DIFF_FILE"
+      - name: Procurar secrets e padrões de injection
+        env:
+          DIFF_FILE: ${{ runner.temp }}/pr-diff.txt
+          DOCKERFILE: aula-09/technova-api/Dockerfile
+        run: node .github/scripts/security-scan.js
