@@ -12,11 +12,11 @@ Projeto do TF da Aula 09. O registry de destino é Amazon ECR (`us-east-1`); o s
 - `../.github/scripts/ai-review.js`: análise por regras do diff e geração do comentário.
 - `../.github/workflows/build-push-ecr.yml`: publicação opcional por GitHub Actions; exige os três secrets temporários do Learner Lab.
 
-## Estado atual e execução
+## Execução local
 
-A cópia local deste portfólio ainda não contém `aula-08/technova-api/`. Portanto, a aplicação deve ser copiada da Aula 08 para `aula-09/technova-api/` antes de buildar o container. O script verifica essa dependência e encerra com instrução se o Dockerfile estiver ausente.
+A pasta `technova-api/` contém a aplicação e os testes reaproveitados da Aula 08, além do Dockerfile multi-stage otimizado para esta aula. Os checks locais de lint, testes e sintaxe do build passaram.
 
-Com a aplicação presente, execute em Git Bash ou WSL:
+Em Git Bash ou WSL, execute:
 
 ```bash
 cd aula-09

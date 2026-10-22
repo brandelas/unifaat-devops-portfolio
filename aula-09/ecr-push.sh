@@ -13,6 +13,11 @@ fi
 command -v aws >/dev/null || { echo "Erro: AWS CLI não instalado." >&2; exit 2; }
 command -v docker >/dev/null || { echo "Erro: Docker não instalado." >&2; exit 2; }
 
+if [[ -n "$(git -C "${APP_DIR}" status --porcelain --untracked-files=all)" ]]; then
+  echo "Erro: a árvore Git precisa estar limpa para a tag SHA identificar exatamente a imagem publicada." >&2
+  exit 2
+fi
+
 ACCOUNT_ID="$(aws sts get-caller-identity --query Account --output text)"
 REGISTRY="${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com"
 ECR_URI="${REGISTRY}/${REPOSITORY}"
