@@ -18,7 +18,7 @@ Portfólio de atividades da disciplina, do Git e Docker à infraestrutura como c
 | [05](aula-05/) | RDS PostgreSQL e remote state S3/DynamoDB | Código integrado; evidências de execução AWS continuam pendentes |
 | [06](aula-06/) | Módulos Terraform reutilizáveis em dev e staging | Código integrado; arquivos `.tfvars` locais são ignorados pelo Git |
 | [07](aula-07/) | API de reserva de salas e Spec-Driven | API integrada e validada localmente; sessão Kiro e relato pessoal pendentes |
-| [08](aula-08/) | GitHub Actions, lint, testes e Docker | API e workflow preparados; execução Actions, secret e capturas pendentes |
+| [08](aula-08/) | GitHub Actions, lint, testes e Docker | Pipeline verificada; secret `AWS_REGION` e evidências reais registrados |
 
 ## Aula 08 — CI
 
