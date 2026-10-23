@@ -32,4 +32,8 @@ Regex pode gerar falsos positivos e falsos negativos. O scanner vê apenas linha
 
 ## Evidências de execução
 
-As evidências reais de publicação no ECR, pull/rollback, comentário em PR e bloqueio do quality gate serão adicionadas após as execuções correspondentes. Até lá, esses resultados permanecem pendentes; nenhum screenshot foi fabricado.
+Na execução local em 2026-10-22, o script publicou no repositório ECR `technova-api` as tags `sha-f5121b9`, `latest`, `1.0.0`, `1.0` e `1`, todas apontando para o digest `sha256:0a6729d3aa5136c3521a578d7e385b648fcc5fad88d1004bfecbe8f188e4f1ac`. A imagem `1.0.0` foi baixada do ECR e executada localmente; o endpoint `/health` respondeu `ok`. Lint, os nove testes da API e a verificação de sintaxe também passaram localmente.
+
+O workflow opcional `Build and Push to Amazon ECR` foi acionado pela tag Git `v1.0.0`, mas falhou na configuração das credenciais AWS porque os secrets necessários não estão configurados no GitHub. A publicação pelo script local do Learner Lab foi concluída com sucesso; credenciais temporárias não foram copiadas para o repositório.
+
+Continuam pendentes as capturas do console ECR, do comentário em PR, de uma execução verde no GitHub Actions e do quality gate bloqueando um PR. Os workflows de review e gate dependem de um pull request e não foram executados; nenhum PR foi aberto e nenhum screenshot foi fabricado.

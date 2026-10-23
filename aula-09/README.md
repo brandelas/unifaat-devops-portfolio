@@ -42,4 +42,6 @@ O workflow roda em PRs e novos pushes. A análise por regras posta ou atualiza u
 
 ## Evidências
 
-As screenshots obrigatórias ficam pendentes até o uso autorizado do Learner Lab e a execução de PRs reais. Não há imagens de evidência simuladas neste repositório.
+O script publicou `sha-f5121b9`, `latest`, `1.0.0`, `1.0` e `1` no ECR. A imagem `1.0.0` foi baixada e executada localmente; `/health` respondeu `ok`. ESLint, os nove testes da API e a verificação de sintaxe passaram. O workflow opcional no Actions foi acionado pela tag `v1.0.0`, mas não conseguiu carregar credenciais AWS porque os secrets não estão configurados no GitHub; a publicação local pelo Learner Lab foi concluída.
+
+As screenshots do console ECR, de um comentário de AI Review, do quality gate bloqueando e de uma execução do workflow no GitHub Actions ainda estão pendentes. AI Review e quality gate dependem de um pull request; não foram executados e nenhum PR foi aberto. Não há imagens de evidência simuladas neste repositório.
