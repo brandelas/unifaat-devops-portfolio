@@ -21,20 +21,42 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Coletar diff do PR
+      - name: Coletar diff limitado
+        id: collect
         env:
           BASE_REF: ${{ github.base_ref }}
           DIFF_FILE: ${{ runner.temp }}/pr-diff.txt
-        run: git diff --no-ext-diff --unified=0 "origin/${BASE_REF}...HEAD" -- > "$DIFF_FILE"
+          STATUS_FILE: ${{ runner.temp }}/pr-diff-status.json
+        run: node .github/scripts/collect-pr-diff.js
       - name: Analisar diff
         id: analysis
+        if: steps.collect.outcome == 'success'
         continue-on-error: true
         env:
           DIFF_FILE: ${{ runner.temp }}/pr-diff.txt
+          STATUS_FILE: ${{ runner.temp }}/pr-diff-status.json
           REVIEW_RESULT: ${{ runner.temp }}/ai-review-result.md
         run: node .github/scripts/ai-review.js
+      - name: Preparar relatório de falha
+        id: fallback
+        if: always()
+        env:
+          REVIEW_RESULT: ${{ runner.temp }}/ai-review-result.md
+          STATUS_FILE: ${{ runner.temp }}/pr-diff-status.json
+          COLLECT_OUTCOME: ${{ steps.collect.outcome }}
+          ANALYSIS_OUTCOME: ${{ steps.analysis.outcome }}
+        run: |
+          if [ "$COLLECT_OUTCOME" = "failure" ]; then
+            note='A coleta do diff falhou. Nenhum resultado de análise está disponível.'
+            if [ -s "$STATUS_FILE" ]; then
+              note="$(node -e 'const fs=require("node:fs");const status=JSON.parse(fs.readFileSync(process.env.STATUS_FILE,"utf8"));process.stdout.write(status.note||"A coleta do diff falhou.")')"
+            fi
+            printf '%s\n' '<!-- technova-ai-review -->' '## AI Code Review — TechNova' '' "⚠️ ${note} O quality gate ficará bloqueado." > "$REVIEW_RESULT"
+          elif [ ! -s "$REVIEW_RESULT" ]; then
+            printf '%s\n' '<!-- technova-ai-review -->' '## AI Code Review — TechNova' '' '⚠️ A análise automática falhou antes de gerar o relatório. O quality gate ficará bloqueado.' > "$REVIEW_RESULT"
+          fi
       - name: Comentar ou atualizar review
-        if: always() && steps.analysis.outcome != 'skipped'
+        if: always() && steps.collect.outcome != 'skipped' && steps.fallback.outcome == 'success'
         uses: actions/github-script@v7
         env:
           REVIEW_RESULT: ${{ runner.temp }}/ai-review-result.md
@@ -57,7 +79,7 @@ jobs:
               await github.rest.issues.createComment({ owner, repo, issue_number, body });
             }
       - name: Aplicar quality gate
-        if: always() && steps.analysis.outcome == 'failure'
+        if: always() && (steps.collect.outcome == 'failure' || steps.analysis.outcome == 'failure')
         run: |
-          echo 'O review encontrou achados CRITICAL ou falhou ao analisar o diff.'
+          echo 'A coleta ou análise do diff falhou, incluindo achados CRITICAL ou review incompleto.'
           exit 1

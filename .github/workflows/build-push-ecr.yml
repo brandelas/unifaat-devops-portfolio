@@ -1,10 +1,12 @@
 name: Build and Push to Amazon ECR
 
 on:
-  push:
-    branches: [main]
-    tags: ['v*.*.*']
   workflow_dispatch:
+    inputs:
+      confirm_publish:
+        description: Type PUBLISH to authorize this ECR publication
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -15,12 +17,23 @@ env:
 
 jobs:
   build-and-push:
+    name: Manual ECR publication
     runs-on: ubuntu-latest
+    environment: ecr-publish
     steps:
+      - name: Confirmar autorização explícita
+        env:
+          CONFIRM_PUBLISH: ${{ inputs.confirm_publish }}
+        run: |
+          if [[ "$CONFIRM_PUBLISH" != "PUBLISH" ]]; then
+            echo 'Publicação cancelada: informe PUBLISH para confirmar.' >&2
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials (Learner Lab)
+      - name: Configurar credenciais temporárias do Learner Lab
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}

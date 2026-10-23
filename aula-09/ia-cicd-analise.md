@@ -14,7 +14,7 @@ Em produção, o deploy deve preferir digest ou tag de versão imutável; `lates
 
 ## Review automatizado
 
-O workflow analisa somente linhas adicionadas pelo PR. O script aplica regras transparentes para credenciais hardcoded e chaves AWS, `eval()`, construção suspeita de comandos, queries SQL concatenadas, `console.log/debug/info`, `catch` vazio, marcadores TODO/FIXME e binding em todas as interfaces. O comentário resume os achados por severidade e inclui arquivo, linha aproximada e trecho reduzido. Um marcador HTML permite atualizar o comentário do bot quando chega outro push.
+O workflow analisa somente linhas adicionadas pelo PR. O script aplica regras transparentes para credenciais hardcoded e chaves AWS, uso de `eval`, construção suspeita de comandos, queries SQL concatenadas, `console.log/debug/info`, `catch` vazio, marcadores de trabalho pendente e binding em todas as interfaces. O comentário resume os achados por severidade e inclui arquivo, linha aproximada e trecho reduzido. Um marcador HTML permite atualizar o comentário do bot quando chega outro push.
 
 Apesar do nome AI Review usado pelo exercício, a implementação atual é análise heurística por regex (Opção A do laboratório); não envia o diff a Bedrock ou a outro provedor. Um modelo com Bedrock seria uma extensão e exigiria permissão, credenciais e custos/limites próprios.
 
@@ -24,7 +24,13 @@ Apesar do nome AI Review usado pelo exercício, a implementação atual é anál
 - **WARNING:** padrão de qualidade ou risco contextual; o workflow passa, mas recomenda revisão.
 - **INFO:** sugestão ou marcador pendente; o workflow passa.
 
+O passo de análise só roda se a coleta terminar com sucesso. Se a coleta falhar ou exceder os limites, o coletor retorna código diferente de zero, o passo de análise é ignorado, o fallback cria um relatório explicativo (incluindo a causa segura quando disponível), o workflow tenta publicar o comentário e o quality gate falha. Uma falha da análise ou um achado CRITICAL também reprova o job. O comentário é tentado mesmo após falhas anteriores; se a API do GitHub não permitir comentar, esse passo falha e o job permanece reprovado.
+
+O coletor limita o diff a 300 arquivos, 20.000 linhas alteradas e 4 MiB. Arquivos binários não são enviados ao analisador e aparecem contabilizados no comentário. PRs que excedam os limites precisam ser divididos; o job não aprova uma análise parcial.
+
 O gate não substitui as permissões de branch do GitHub. Revisores humanos devem confirmar contexto, impacto e correção proposta, especialmente em achados críticos.
+
+O workflow de publicação ECR não é disparado por push ou tag. Ele requer execução manual, a entrada literal `PUBLISH` e os secrets temporários da sessão. O ambiente GitHub `ecr-publish` deve ter revisores configurados para exigir aprovação antes do uso.
 
 ## Limitações
 
@@ -32,8 +38,10 @@ Regex pode gerar falsos positivos e falsos negativos. O scanner vê apenas linha
 
 ## Evidências de execução
 
-Na execução local em 2026-10-22, o script publicou no repositório ECR `technova-api` as tags `sha-f5121b9`, `latest`, `1.0.0`, `1.0` e `1`, todas apontando para o digest `sha256:0a6729d3aa5136c3521a578d7e385b648fcc5fad88d1004bfecbe8f188e4f1ac`. A imagem `1.0.0` foi baixada do ECR e executada localmente; o endpoint `/health` respondeu `ok`. Lint, os nove testes da API e a verificação de sintaxe também passaram localmente.
+Na execução local em 2026-10-22, o script publicou no repositório ECR `technova-api` as tags `sha-f5121b9`, `latest`, `1.0.0`, `1.0` e `1`, todas apontando para o digest `sha256:0a6729d3aa5136c3521a578d7e385b648fcc5fad88d1004bfecbe8f188e4f1ac`. A imagem `1.0.0` foi baixada do ECR e executada localmente; o endpoint `/health` respondeu `ok`. Nesta etapa local passaram ESLint, os nove testes da API, a verificação de sintaxe e 16 testes dos scripts/workflow estático. Esses testes não executam o GitHub Actions.
 
 O workflow opcional `Build and Push to Amazon ECR` foi acionado pela tag Git `v1.0.0`, mas falhou na configuração das credenciais AWS porque os secrets necessários não estão configurados no GitHub. A publicação pelo script local do Learner Lab foi concluída com sucesso; credenciais temporárias não foram copiadas para o repositório.
 
 Continuam pendentes as capturas do console ECR, do comentário em PR, de uma execução verde no GitHub Actions e do quality gate bloqueando um PR. Os workflows de review e gate dependem de um pull request e não foram executados; nenhum PR foi aberto e nenhum screenshot foi fabricado.
+
+Os testes locais verificam o parser/analisador, a resposta a diff incompleto e as condições estáticas do YAML. Eles não executam o mecanismo do GitHub Actions nem comprovam comentários, permissões efetivas do token ou bloqueio remoto de merge.
